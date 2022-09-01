@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "729280896472",
+    "project_id": "cashcount-7c93e",
+    "storage_bucket": "cashcount-7c93e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:729280896472:android:0ddc16ff3dd7c1ac4226ad",
+        "android_client_info": {
+          "package_name": "com.example.cashcount"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "729280896472-m9rsdas8hc429tdn1q4rpd4h5roti13n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2ojeE-czELANHFnlZbGOG6b62jC-GPK4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "729280896472-m9rsdas8hc429tdn1q4rpd4h5roti13n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
