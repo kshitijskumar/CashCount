@@ -14,8 +14,6 @@ import com.example.cashcount.ui.theme.CashCountTheme
 
 class MainActivity : ComponentActivity() {
 
-    val TAG = "MainActivityStuff"
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
