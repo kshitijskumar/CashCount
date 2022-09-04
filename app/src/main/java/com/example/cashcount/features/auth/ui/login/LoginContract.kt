@@ -11,6 +11,8 @@ data class LoginViewState(
 sealed class LoginIntent {
     data class OnPhoneNumberUpdatedIntent(val numberEntered: String): LoginIntent()
     object OnContinueClicked : LoginIntent()
+    object NavigateToVerificationScreen : LoginIntent()
+    object StopLoading : LoginIntent()
 }
 
 sealed class LoginSideEffect {
@@ -33,5 +35,16 @@ sealed class LoginPartialChange : PartialChange<LoginViewState> {
         data class InvalidNumberEntered(val numberEntered: String): PhoneNumberUpdateChange()
     }
 
-    data class ContinueClickedChange(val numberEntered: String) : LoginPartialChange()
+    data class ContinueClickedChange(val numberEntered: String) : LoginPartialChange() {
+        override fun reduce(oldState: LoginViewState): LoginViewState {
+            return oldState.copy(isLoading = true)
+        }
+    }
+
+    object NavigateToVerificationScreenChange : LoginPartialChange()
+    object StopLoadingChange : LoginPartialChange() {
+        override fun reduce(oldState: LoginViewState): LoginViewState {
+            return oldState.copy(isLoading = false)
+        }
+    }
 }

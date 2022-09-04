@@ -13,3 +13,5 @@ val Black_20 = Color(0xFF91919F)
 val White_80 = Color(0xFFFCFCFC)
 val Violet = Color(0xFF7F3DFF)
 val Violet_20 = Color(0xFFEEE5FF)
+
+val Black_100 = Color(0xFF0D0E0F)

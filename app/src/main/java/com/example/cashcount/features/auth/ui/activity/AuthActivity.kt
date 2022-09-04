@@ -1,8 +1,10 @@
 package com.example.cashcount.features.auth.ui.activity
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -22,22 +24,36 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.cashcount.MainActivity
+import com.example.cashcount.features.auth.handler.PhoneAuthHandler
+import com.example.cashcount.features.auth.handler.PhoneAuthHandlerImpl
 import com.example.cashcount.features.auth.ui.login.LoginScreen
 import com.example.cashcount.features.auth.ui.navigation.AuthNavIntent
 import com.example.cashcount.features.auth.ui.navigation.AuthNavSideEffect
 import com.example.cashcount.features.auth.ui.navigation.AuthNavigationScreens
 import com.example.cashcount.features.auth.ui.navigation.AuthNavigationViewModel
 import com.example.cashcount.features.auth.ui.onboarding.OnboardingScreen
+import com.example.cashcount.features.auth.ui.verification.VerificationScreen
 import com.example.cashcount.ui.theme.CashCountTheme
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
+import java.lang.ref.WeakReference
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class AuthActivity : ComponentActivity() {
 
     private val viewModel by viewModels<AuthNavigationViewModel>()
-    private val intentChannel = Channel<AuthNavIntent>(Channel.BUFFERED)
+
+    @Inject lateinit var firebaseAuth: FirebaseAuth
+
+    private val phoneAuthHandler: PhoneAuthHandler by lazy {
+        PhoneAuthHandlerImpl(
+            activityRef = WeakReference<Activity>(this),
+            auth = firebaseAuth
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +67,10 @@ class AuthActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     val scope = rememberCoroutineScope()
                     val state = viewModel.state.collectAsState()
+                    val phoneAuthStatus = phoneAuthHandler
+                        .getPhoneAuthStatusAsFlow()
+                        .collectAsState(initial = null)
+
                     LaunchedEffect(key1 = navController) {
                         Log.d("AuthActStuff", "launch")
                         handleSideEffects(navController)
@@ -74,14 +94,35 @@ class AuthActivity : ComponentActivity() {
 
                             composable(route = AuthNavigationScreens.LoginScreen.routeName) {
                                 LoginScreen(
+                                    phoneAuthStatus = phoneAuthStatus.value,
                                     onBackPressed = {
                                         navController.navigateUp()
+                                    },
+                                    startPhoneLogin = { phoneNumberWithCountryCode ->
+                                        phoneAuthHandler.verifyPhoneNumber(phoneNumberWithCountryCode)
+                                    },
+                                    navigateToVerificationScreen = {
+                                        scope.launch {
+                                            viewModel.processIntent(AuthNavIntent.NavigateToVerificationScreen)
+                                        }
                                     }
                                 )
                             }
 
                             composable(route = AuthNavigationScreens.VerificationScreen.routeName) {
+                                VerificationScreen(
+                                    phoneAuthStatus = phoneAuthStatus.value,
+                                    verifyCodeEntered = { code ->
+                                        phoneAuthHandler.verifyCodeEntered(code)
+                                        Toast.makeText(this@AuthActivity, code, Toast.LENGTH_LONG).show()
+                                    },
+                                    onSignInSuccess = { user ->
 
+                                    },
+                                    onBackPressed = {
+                                        navController.navigateUp()
+                                    }
+                                )
                             }
 
                             composable(route = AuthNavigationScreens.SetupAccountScreen.routeName) {

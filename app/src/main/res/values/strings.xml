@@ -5,4 +5,8 @@
     <string name="login">Login</string>
     <string name="phone_number">Phone number</string>
     <string name="continue_text">Continue</string>
+    <string name="loading">Loading</string>
+    <string name="verification">Verification</string>
+    <string name="verify">Verify</string>
+    <string name="enter_your_verification_code">Enter your \nVerification Code</string>
 </resources>

@@ -19,7 +19,8 @@
             android:name=".features.auth.ui.activity.AuthActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.CashCount">
+            android:theme="@style/Theme.CashCount"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

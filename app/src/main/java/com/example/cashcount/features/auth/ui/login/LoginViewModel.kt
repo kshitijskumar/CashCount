@@ -21,7 +21,9 @@ class LoginViewModel @Inject constructor(
     override fun Flow<LoginIntent>.toPartialChange(): Flow<LoginPartialChange> {
         return merge(
             handleOnPhoneNumberUpdatedIntent(filterIsInstance()),
-            handleOnContinueClicked(filterIsInstance())
+            handleOnContinueClicked(filterIsInstance()),
+            handleNavigateToVerificationScreenIntent(filterIsInstance()),
+            handleStopLoadingIntent(filterIsInstance())
         )
     }
 
@@ -30,6 +32,8 @@ class LoginViewModel @Inject constructor(
             is LoginPartialChange.PhoneNumberUpdateChange.InvalidNumberEntered -> null
             is LoginPartialChange.PhoneNumberUpdateChange.ValidNumberEntered -> null
             is LoginPartialChange.ContinueClickedChange -> LoginSideEffect.StartPhoneLogin(change.numberEntered)
+            LoginPartialChange.NavigateToVerificationScreenChange -> LoginSideEffect.NavigateToVerificationScreen
+            LoginPartialChange.StopLoadingChange -> null
         }
 
         return mutableListOf<LoginSideEffect>().apply {
@@ -55,6 +59,22 @@ class LoginViewModel @Inject constructor(
     ): Flow<LoginPartialChange.ContinueClickedChange> {
         return flow.map {
             LoginPartialChange.ContinueClickedChange("$+91${state.value.phoneNumberEntered.replace(" ", "")}")
+        }
+    }
+
+    private fun handleNavigateToVerificationScreenIntent(
+        flow: Flow<LoginIntent.NavigateToVerificationScreen>
+    ): Flow<LoginPartialChange.NavigateToVerificationScreenChange> {
+        return flow.map {
+            LoginPartialChange.NavigateToVerificationScreenChange
+        }
+    }
+
+    private fun handleStopLoadingIntent(
+        flow: Flow<LoginIntent.StopLoading>
+    ): Flow<LoginPartialChange.StopLoadingChange> {
+        return flow.map {
+            LoginPartialChange.StopLoadingChange
         }
     }
 }
