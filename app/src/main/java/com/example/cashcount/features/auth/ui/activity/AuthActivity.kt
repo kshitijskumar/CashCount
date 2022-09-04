@@ -22,6 +22,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.cashcount.MainActivity
+import com.example.cashcount.features.auth.ui.login.LoginScreen
 import com.example.cashcount.features.auth.ui.navigation.AuthNavIntent
 import com.example.cashcount.features.auth.ui.navigation.AuthNavSideEffect
 import com.example.cashcount.features.auth.ui.navigation.AuthNavigationScreens
@@ -72,7 +73,19 @@ class AuthActivity : ComponentActivity() {
                             }
 
                             composable(route = AuthNavigationScreens.LoginScreen.routeName) {
-                                Text(text = "login")
+                                LoginScreen(
+                                    onBackPressed = {
+                                        navController.navigateUp()
+                                    }
+                                )
+                            }
+
+                            composable(route = AuthNavigationScreens.VerificationScreen.routeName) {
+
+                            }
+
+                            composable(route = AuthNavigationScreens.SetupAccountScreen.routeName) {
+
                             }
                         }
                     }

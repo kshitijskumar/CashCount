@@ -24,7 +24,8 @@ fun CashCountButton(
     modifier: Modifier = Modifier,
     mode: CashCountButtonMode = CashCountButtonMode.LightOnDark,
     btnText: String,
-    onClick: () -> Unit,
+    isEnabled: Boolean = true,
+    onClick: () -> Unit
 ) {
     val buttonColors = mode.getButtonColors()
 
@@ -36,7 +37,8 @@ fun CashCountButton(
             .buttonColors(
                 backgroundColor = buttonColors.backgroundColor,
                 contentColor = Color.Transparent
-            )
+            ),
+        enabled = isEnabled
     ) {
         Text(
             text = btnText,

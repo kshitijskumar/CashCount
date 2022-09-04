@@ -3,4 +3,6 @@
     <string name="onboarding_title">Gain total control \nof your money</string>
     <string name="onboarding_subtitle">Become your own money manager \nand make every cent count</string>
     <string name="login">Login</string>
+    <string name="phone_number">Phone number</string>
+    <string name="continue_text">Continue</string>
 </resources>
