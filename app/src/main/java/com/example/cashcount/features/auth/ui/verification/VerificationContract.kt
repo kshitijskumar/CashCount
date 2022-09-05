@@ -1,5 +1,6 @@
 package com.example.cashcount.features.auth.ui.verification
 
+import com.example.cashcount.datastore.user.models.UserDataStoreModel
 import com.example.cashcount.mvi.PartialChange
 
 data class VerificationState(
@@ -12,10 +13,12 @@ sealed class VerificationIntent {
     data class OnCodeUpdatedIntent(val newCode: String): VerificationIntent()
     object OnVerifyClickedIntent : VerificationIntent()
     object StopLoading : VerificationIntent()
+    data class CreateUserIntent(val user: UserDataStoreModel): VerificationIntent()
 }
 
 sealed class VerificationSideEffect {
     data class VerifyCodeEntered(val codeEntered: String): VerificationSideEffect()
+    object UserCreated : VerificationSideEffect()
 }
 
 sealed class VerificationPartialChange : PartialChange<VerificationState> {
@@ -33,6 +36,12 @@ sealed class VerificationPartialChange : PartialChange<VerificationState> {
     }
 
     object StopLoadingChange : VerificationPartialChange() {
+        override fun reduce(oldState: VerificationState): VerificationState {
+            return oldState.copy(isLoading = false)
+        }
+    }
+
+    data class CreateUserChange(val user: UserDataStoreModel): VerificationPartialChange() {
         override fun reduce(oldState: VerificationState): VerificationState {
             return oldState.copy(isLoading = false)
         }

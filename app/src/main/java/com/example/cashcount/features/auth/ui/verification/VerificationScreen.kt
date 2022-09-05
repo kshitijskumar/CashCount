@@ -19,6 +19,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.cashcount.R
 import com.example.cashcount.components.*
+import com.example.cashcount.features.auth.data.mappers.toUserDataStoreModels
 import com.example.cashcount.features.auth.handler.PhoneAuthFailureReason
 import com.example.cashcount.features.auth.handler.PhoneAuthStatus
 import com.example.cashcount.ui.theme.Black_100
@@ -30,8 +31,8 @@ fun VerificationScreen(
     vm: VerificationViewModel = hiltViewModel(),
     phoneAuthStatus: PhoneAuthStatus?,
     verifyCodeEntered: (String) -> Unit,
-    onSignInSuccess: (FirebaseUser?) -> Unit,
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit,
+    navigateToMainScreen: () -> Unit
 ) {
 
     val scope = rememberCoroutineScope()
@@ -49,7 +50,7 @@ fun VerificationScreen(
                 // not to handle here
             }
             is PhoneAuthStatus.VerificationCompleted -> {
-                onSignInSuccess.invoke(phoneAuthStatus.user)
+                vm.processIntent(VerificationIntent.CreateUserIntent(phoneAuthStatus.user.toUserDataStoreModels()))
             }
             is PhoneAuthStatus.VerificationFailed -> {
                 val toastMsg = when(phoneAuthStatus.reason) {
@@ -70,6 +71,9 @@ fun VerificationScreen(
                     when(it) {
                         is VerificationSideEffect.VerifyCodeEntered -> {
                             verifyCodeEntered.invoke(it.codeEntered)
+                        }
+                        VerificationSideEffect.UserCreated -> {
+                            navigateToMainScreen.invoke()
                         }
                     }
                 }

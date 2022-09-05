@@ -65,7 +65,11 @@ class PhoneAuthHandlerImpl(
                     if (task.isSuccessful) {
                         Log.d(this@PhoneAuthHandlerImpl.javaClass.simpleName, "sign in success")
                         val user = task.result?.user
-                        phoneAuthStatus.trySend(PhoneAuthStatus.VerificationCompleted(user))
+                        if (user != null) {
+                            phoneAuthStatus.trySend(PhoneAuthStatus.VerificationCompleted(user))
+                        } else {
+                            phoneAuthStatus.trySend(PhoneAuthStatus.VerificationFailed(PhoneAuthFailureReason.UNKNOWN_ERROR))
+                        }
                     } else {
                         Log.d(this@PhoneAuthHandlerImpl.javaClass.simpleName, "sign in failure")
                         if (task.exception is FirebaseAuthInvalidCredentialsException) {
@@ -131,7 +135,7 @@ class PhoneAuthHandlerImpl(
 
 sealed class PhoneAuthStatus {
 
-    data class VerificationCompleted(val user: FirebaseUser?) : PhoneAuthStatus()
+    data class VerificationCompleted(val user: FirebaseUser) : PhoneAuthStatus()
     data class VerificationFailed(val reason: PhoneAuthFailureReason) : PhoneAuthStatus()
     object CodeSent : PhoneAuthStatus()
 }

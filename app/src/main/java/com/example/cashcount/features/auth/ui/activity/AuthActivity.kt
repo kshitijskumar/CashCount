@@ -116,11 +116,13 @@ class AuthActivity : ComponentActivity() {
                                         phoneAuthHandler.verifyCodeEntered(code)
                                         Toast.makeText(this@AuthActivity, code, Toast.LENGTH_LONG).show()
                                     },
-                                    onSignInSuccess = { user ->
-
-                                    },
                                     onBackPressed = {
                                         navController.navigateUp()
+                                    },
+                                    navigateToMainScreen = {
+                                        scope.launch {
+                                            viewModel.processIntent(AuthNavIntent.NavigateToMainScreen)
+                                        }
                                     }
                                 )
                             }

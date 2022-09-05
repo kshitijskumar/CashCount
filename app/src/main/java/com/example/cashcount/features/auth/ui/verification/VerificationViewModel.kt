@@ -1,5 +1,6 @@
 package com.example.cashcount.features.auth.ui.verification
 
+import com.example.cashcount.features.auth.domain.CreateUserUseCase
 import com.example.cashcount.mvi.MviViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -9,7 +10,9 @@ import kotlinx.coroutines.flow.merge
 import javax.inject.Inject
 
 @HiltViewModel
-class VerificationViewModel @Inject constructor() : MviViewModel<VerificationState, VerificationIntent, VerificationSideEffect, VerificationPartialChange>()  {
+class VerificationViewModel @Inject constructor(
+    private val createUserUseCase: CreateUserUseCase
+) : MviViewModel<VerificationState, VerificationIntent, VerificationSideEffect, VerificationPartialChange>()  {
 
     override fun initialState(): VerificationState {
         return VerificationState()
@@ -20,6 +23,7 @@ class VerificationViewModel @Inject constructor() : MviViewModel<VerificationSta
             handleOnCodeUpdatedIntent(filterIsInstance()),
             handleOnVerifyClickedIntent(filterIsInstance()),
             handleStopLoadingIntent(filterIsInstance()),
+            handleCreateUserIntent(filterIsInstance())
         )
     }
 
@@ -30,6 +34,9 @@ class VerificationViewModel @Inject constructor() : MviViewModel<VerificationSta
                 VerificationSideEffect.VerifyCodeEntered(state.value.codeEntered)
             }
             VerificationPartialChange.StopLoadingChange -> null
+            is VerificationPartialChange.CreateUserChange -> {
+                VerificationSideEffect.UserCreated
+            }
         }
 
         return mutableListOf<VerificationSideEffect>().apply {
@@ -58,6 +65,15 @@ class VerificationViewModel @Inject constructor() : MviViewModel<VerificationSta
     ): Flow<VerificationPartialChange.StopLoadingChange> {
         return flow.map {
             VerificationPartialChange.StopLoadingChange
+        }
+    }
+
+    private fun handleCreateUserIntent(
+        flow: Flow<VerificationIntent.CreateUserIntent>
+    ): Flow<VerificationPartialChange.CreateUserChange> {
+        return flow.map {
+            createUserUseCase.invoke(it.user)
+            VerificationPartialChange.CreateUserChange(it.user)
         }
     }
 }
