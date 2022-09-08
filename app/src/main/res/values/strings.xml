@@ -9,4 +9,7 @@
     <string name="verification">Verification</string>
     <string name="verify">Verify</string>
     <string name="enter_your_verification_code">Enter your \nVerification Code</string>
+    <string name="lets_setup_your_account">Let\'s setup your \naccount!</string>
+    <string name="account_onboarding_account_type_info">Account can be your bank, credit card or \nyour wallet.</string>
+    <string name="lets_go">Let\'s go</string>
 </resources>

@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import com.example.cashcount.datastore.user.models.UserDataStoreModel
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Named
@@ -18,6 +19,8 @@ interface UserDataStore {
     fun isUserLoggedIn(): Flow<Boolean>
 
     suspend fun setCurrentUser(user: UserDataStoreModel)
+
+    suspend fun getCurrentUserId(): String?
 
 }
 
@@ -50,6 +53,10 @@ class UserDataStoreImpl @Inject constructor(
         dataStore.edit {
             it.set(USER_DETAILS_PREF, userDetailsJson)
         }
+    }
+
+    override suspend fun getCurrentUserId(): String? {
+        return getCurrentLoggedInUser().firstOrNull()?.userId
     }
 
     companion object {

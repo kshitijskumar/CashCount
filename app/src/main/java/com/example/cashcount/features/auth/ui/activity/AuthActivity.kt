@@ -23,7 +23,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.cashcount.MainActivity
 import com.example.cashcount.features.auth.handler.PhoneAuthHandler
 import com.example.cashcount.features.auth.handler.PhoneAuthHandlerImpl
 import com.example.cashcount.features.auth.ui.login.LoginScreen
@@ -33,6 +32,7 @@ import com.example.cashcount.features.auth.ui.navigation.AuthNavigationScreens
 import com.example.cashcount.features.auth.ui.navigation.AuthNavigationViewModel
 import com.example.cashcount.features.auth.ui.onboarding.OnboardingScreen
 import com.example.cashcount.features.auth.ui.verification.VerificationScreen
+import com.example.cashcount.features.main.MainActivity
 import com.example.cashcount.ui.theme.CashCountTheme
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
