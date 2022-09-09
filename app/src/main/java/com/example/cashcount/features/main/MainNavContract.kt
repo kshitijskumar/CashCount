@@ -15,12 +15,14 @@ enum class MainScreenStartDestinationsType {
 sealed class MainNavIntent {
 
     object InitializationIntent : MainNavIntent()
+    object CreateAccountIntent : MainNavIntent()
 
 }
 
 sealed class MainNavSideEffect {
 
     object NavigateToMainScreen : MainNavSideEffect()
+    object NavigateToCreateAccountScreen : MainNavSideEffect()
 
 }
 
@@ -49,5 +51,7 @@ sealed class MainNavPartialChange : PartialChange<MainNavState> {
         object AtleastOneAccountExist : InitializationChange()
 
     }
+
+    object CreateAccountChange : MainNavPartialChange()
 
 }

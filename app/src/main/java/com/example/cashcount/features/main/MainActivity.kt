@@ -22,6 +22,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.cashcount.datastore.user.UserDataStore
 import com.example.cashcount.datastore.user.models.UserDataStoreModel
 import com.example.cashcount.features.createaccount.ui.CreateAccountOnboardingScreen
+import com.example.cashcount.features.createaccount.ui.CreateAccountScreen
 import com.example.cashcount.ui.theme.CashCountTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -54,7 +55,11 @@ class MainActivity : ComponentActivity() {
                         viewModel.processIntent(MainNavIntent.InitializationIntent)
                     }
 
-                    if (state.value.shouldInflateNavigation) {
+                    val inflateNavigation = remember(key1 = state.value.shouldInflateNavigation) {
+                        state.value.shouldInflateNavigation
+                    }
+
+                    if (inflateNavigation) {
                         val startDestination = when(state.value.startDestinationsType) {
                             MainScreenStartDestinationsType.SETUP_ACCOUNT_SCREEN -> MainNavigationScreens.SetupAccountInfoScreen
                             MainScreenStartDestinationsType.DASHBOARD_SCREEN -> MainNavigationScreens.MainDashboardScreen
@@ -64,7 +69,15 @@ class MainActivity : ComponentActivity() {
 
                             composable(route = MainNavigationScreens.SetupAccountInfoScreen.routeName) {
                                 CreateAccountOnboardingScreen {
-                                    Log.d("MainActivityStuff", "on next clicked")
+                                    scope.launch {
+                                        viewModel.processIntent(MainNavIntent.CreateAccountIntent)
+                                    }
+                                }
+                            }
+
+                            composable(route = MainNavigationScreens.CreateAccountScreen.routeName) {
+                                CreateAccountScreen {
+                                    navController.navigateUp()
                                 }
                             }
 
@@ -89,6 +102,9 @@ class MainActivity : ComponentActivity() {
                         when(it) {
                             MainNavSideEffect.NavigateToMainScreen -> {
                                 navController.navigate(MainNavigationScreens.MainDashboardScreen.routeName)
+                            }
+                            MainNavSideEffect.NavigateToCreateAccountScreen -> {
+                                navController.navigate(MainNavigationScreens.CreateAccountScreen.routeName)
                             }
                         }
                     }

@@ -17,3 +17,4 @@ val Violet_20 = Color(0xFFEEE5FF)
 val Black_100 = Color(0xFF0D0E0F)
 
 val Black_25 = Color(0xFF292B2D)
+val White_80_64 = Color(0xA3FCFCFC)

@@ -18,7 +18,8 @@ class MainNavViewModel @Inject constructor(
 
     override fun Flow<MainNavIntent>.toPartialChange(): Flow<MainNavPartialChange> {
         return merge(
-            handleInitializationIntent(filterIsInstance())
+            handleInitializationIntent(filterIsInstance()),
+            handleCreateAccountIntent(filterIsInstance())
         )
     }
 
@@ -26,6 +27,7 @@ class MainNavViewModel @Inject constructor(
         val effect: MainNavSideEffect? = when(change) {
             MainNavPartialChange.InitializationChange.AtleastOneAccountExist -> null
             MainNavPartialChange.InitializationChange.NoAccountsExist -> null
+            MainNavPartialChange.CreateAccountChange -> MainNavSideEffect.NavigateToCreateAccountScreen
         }
 
         return mutableListOf<MainNavSideEffect>().apply {
@@ -42,6 +44,14 @@ class MainNavViewModel @Inject constructor(
             } else {
                 MainNavPartialChange.InitializationChange.AtleastOneAccountExist
             }
+        }
+    }
+
+    private fun handleCreateAccountIntent(
+        flow: Flow<MainNavIntent.CreateAccountIntent>
+    ): Flow<MainNavPartialChange.CreateAccountChange> {
+        return flow.map {
+            MainNavPartialChange.CreateAccountChange
         }
     }
 }

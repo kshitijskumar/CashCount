@@ -15,13 +15,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.cashcount.R
 import com.example.cashcount.ui.theme.Black_50
+import com.example.cashcount.ui.theme.White_80
 
 @Composable
 fun CashCountToolbar(
     title: String,
     leftIconConfig: CashCountToolbarConfig? = null,
-    rightIconConfig: CashCountToolbarConfig? = null
+    rightIconConfig: CashCountToolbarConfig? = null,
+    toolbarMode: CashCountToolbarMode = CashCountToolbarMode.DARK_ON_LIGHT
 ) {
+
+    val tint = when(toolbarMode) {
+        CashCountToolbarMode.LIGHT_ON_DARK -> White_80
+        CashCountToolbarMode.DARK_ON_LIGHT -> Black_50
+    }
 
     Row(
         modifier = Modifier
@@ -33,7 +40,8 @@ fun CashCountToolbar(
             leftIconConfig?.let {
                 Icon(
                     painter = painterResource(id = it.iconResId),
-                    contentDescription = null
+                    contentDescription = null,
+                    tint = tint
                 )
             }
         }
@@ -45,7 +53,7 @@ fun CashCountToolbar(
         ) {
             Text(
                 text = title,
-                color = Black_50,
+                color = tint,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
@@ -57,13 +65,19 @@ fun CashCountToolbar(
             rightIconConfig?.let {
                 Icon(
                     painter = painterResource(id = it.iconResId),
-                    contentDescription = null
+                    contentDescription = null,
+                    tint = tint
                 )
             }
         }
 
     }
 
+}
+
+enum class CashCountToolbarMode {
+    LIGHT_ON_DARK,
+    DARK_ON_LIGHT
 }
 
 data class CashCountToolbarConfig(

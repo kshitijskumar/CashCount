@@ -4,6 +4,8 @@ sealed class MainNavigationScreens(val routeName: String) {
 
     object SetupAccountInfoScreen : MainNavigationScreens("setupAccountInfo")
 
+    object  CreateAccountScreen: MainNavigationScreens("createAccount")
+
     object MainDashboardScreen : MainNavigationScreens("mainDashboard")
 
 }

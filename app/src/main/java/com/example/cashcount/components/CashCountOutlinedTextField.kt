@@ -13,6 +13,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -24,12 +25,15 @@ fun CashCountOutlinedTextField(
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
-    placeholderText: String? = null
+    placeholderText: String? = null,
+    trailingIcon: (@Composable () -> Unit)? = null,
+    readOnly: Boolean = false,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences, keyboardType = KeyboardType.Text)
 ) {
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+        keyboardOptions = keyboardOptions,
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
         placeholder = {
@@ -46,7 +50,9 @@ fun CashCountOutlinedTextField(
             unfocusedLabelColor = Black_20,
             focusedBorderColor = Violet,
             focusedLabelColor = Violet
-        )
+        ),
+        trailingIcon = trailingIcon,
+        readOnly = readOnly
     )
 }
 
