@@ -16,6 +16,8 @@ sealed class MainNavIntent {
 
     object InitializationIntent : MainNavIntent()
     object CreateAccountIntent : MainNavIntent()
+    object SuccessScreenIntent : MainNavIntent()
+    object DashboardScreenIntent : MainNavIntent()
 
 }
 
@@ -23,6 +25,8 @@ sealed class MainNavSideEffect {
 
     object NavigateToMainScreen : MainNavSideEffect()
     object NavigateToCreateAccountScreen : MainNavSideEffect()
+    object NavigateToSuccessScreen : MainNavSideEffect()
+    object NavigateToDashboardScreen : MainNavSideEffect()
 
 }
 
@@ -53,5 +57,8 @@ sealed class MainNavPartialChange : PartialChange<MainNavState> {
     }
 
     object CreateAccountChange : MainNavPartialChange()
+    object SuccessScreenChange : MainNavPartialChange()
+    object DashboardScreenChange : MainNavPartialChange()
+
 
 }

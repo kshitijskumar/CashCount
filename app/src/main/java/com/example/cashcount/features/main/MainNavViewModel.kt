@@ -19,7 +19,9 @@ class MainNavViewModel @Inject constructor(
     override fun Flow<MainNavIntent>.toPartialChange(): Flow<MainNavPartialChange> {
         return merge(
             handleInitializationIntent(filterIsInstance()),
-            handleCreateAccountIntent(filterIsInstance())
+            handleCreateAccountIntent(filterIsInstance()),
+            handleSuccessScreenIntent(filterIsInstance()),
+            handleDashboardScreenIntent(filterIsInstance()),
         )
     }
 
@@ -28,6 +30,8 @@ class MainNavViewModel @Inject constructor(
             MainNavPartialChange.InitializationChange.AtleastOneAccountExist -> null
             MainNavPartialChange.InitializationChange.NoAccountsExist -> null
             MainNavPartialChange.CreateAccountChange -> MainNavSideEffect.NavigateToCreateAccountScreen
+            MainNavPartialChange.DashboardScreenChange -> MainNavSideEffect.NavigateToDashboardScreen
+            MainNavPartialChange.SuccessScreenChange -> MainNavSideEffect.NavigateToSuccessScreen
         }
 
         return mutableListOf<MainNavSideEffect>().apply {
@@ -54,4 +58,21 @@ class MainNavViewModel @Inject constructor(
             MainNavPartialChange.CreateAccountChange
         }
     }
+
+    private fun handleSuccessScreenIntent(
+        flow: Flow<MainNavIntent.SuccessScreenIntent>
+    ): Flow<MainNavPartialChange.SuccessScreenChange> {
+        return flow.map {
+            MainNavPartialChange.SuccessScreenChange
+        }
+    }
+
+    private fun handleDashboardScreenIntent(
+        flow: Flow<MainNavIntent.DashboardScreenIntent>
+    ): Flow<MainNavPartialChange.DashboardScreenChange> {
+        return flow.map {
+            MainNavPartialChange.DashboardScreenChange
+        }
+    }
+
 }

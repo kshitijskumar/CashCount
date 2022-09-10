@@ -1,8 +1,6 @@
 package com.example.cashcount.features.main
 
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -10,24 +8,27 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.cashcount.R
+import com.example.cashcount.components.SuccessScreen
 import com.example.cashcount.datastore.user.UserDataStore
-import com.example.cashcount.datastore.user.models.UserDataStoreModel
 import com.example.cashcount.features.createaccount.ui.CreateAccountOnboardingScreen
 import com.example.cashcount.features.createaccount.ui.CreateAccountScreen
 import com.example.cashcount.ui.theme.CashCountTheme
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -82,13 +83,27 @@ class MainActivity : ComponentActivity() {
                                         navController.navigateUp()
                                     },
                                     onAccountCreated = {
-                                        Toast.makeText(this@MainActivity, "account created", Toast.LENGTH_LONG).show()
+                                        scope.launch {
+                                            viewModel.processIntent(MainNavIntent.SuccessScreenIntent)
+                                        }
+                                    }
+                                )
+                            }
+                            
+                            composable(route = MainNavigationScreens.SuccessScreen.routeName) {
+                                SuccessScreen(
+                                    iconResId = R.drawable.ic_success,
+                                    message = stringResource(id = R.string.you_are_set),
+                                    onScreenClicked = {
+                                        scope.launch {
+                                            viewModel.processIntent(MainNavIntent.DashboardScreenIntent)
+                                        }
                                     }
                                 )
                             }
 
                             composable(route = MainNavigationScreens.MainDashboardScreen.routeName) {
-
+                                Text(text = "dash")
                             }
 
                         }
@@ -111,6 +126,17 @@ class MainActivity : ComponentActivity() {
                             }
                             MainNavSideEffect.NavigateToCreateAccountScreen -> {
                                 navController.navigate(MainNavigationScreens.CreateAccountScreen.routeName)
+                            }
+                            MainNavSideEffect.NavigateToSuccessScreen -> {
+                                navController.navigate(MainNavigationScreens.SuccessScreen.routeName)
+                            }
+                            MainNavSideEffect.NavigateToDashboardScreen -> {
+                                navController.navigate(MainNavigationScreens.MainDashboardScreen.routeName) {
+                                    launchSingleTop = true
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        inclusive = true
+                                    }
+                                }
                             }
                         }
                     }

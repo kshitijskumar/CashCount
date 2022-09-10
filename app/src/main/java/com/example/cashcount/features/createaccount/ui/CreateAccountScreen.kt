@@ -31,6 +31,8 @@ fun CreateAccountScreen(
     val scope = rememberCoroutineScope()
     val lifecycleOwner = LocalLifecycleOwner.current
 
+    val state = vm.state.collectAsState()
+
     LaunchedEffect(key1 = vm) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
             vm.effect
@@ -80,7 +82,8 @@ fun CreateAccountScreen(
             Spacer(modifier = Modifier.height(24.dp))
             CashCountButton(
                 btnText = stringResource(id = R.string.continue_text),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                isEnabled = state.value.isContinueEnabled
             ) {
                 scope.launch {
                     vm.processIntent(CreateAccountIntent.OnContinueClicked)
