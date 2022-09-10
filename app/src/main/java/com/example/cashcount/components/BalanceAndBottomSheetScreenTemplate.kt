@@ -75,6 +75,7 @@ fun BalanceAndBottomSheetScreenTemplate(
                     .padding(horizontal = 18.dp)
             ) {
                 this.bottomSheetContent()
+
             }
         }
     }

@@ -2,6 +2,7 @@ package com.example.cashcount.features.main
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -76,9 +77,14 @@ class MainActivity : ComponentActivity() {
                             }
 
                             composable(route = MainNavigationScreens.CreateAccountScreen.routeName) {
-                                CreateAccountScreen {
-                                    navController.navigateUp()
-                                }
+                                CreateAccountScreen(
+                                    onBackPressed = {
+                                        navController.navigateUp()
+                                    },
+                                    onAccountCreated = {
+                                        Toast.makeText(this@MainActivity, "account created", Toast.LENGTH_LONG).show()
+                                    }
+                                )
                             }
 
                             composable(route = MainNavigationScreens.MainDashboardScreen.routeName) {

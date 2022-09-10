@@ -56,7 +56,7 @@ class UserDataStoreImpl @Inject constructor(
     }
 
     override suspend fun getCurrentUserId(): String? {
-        return getCurrentLoggedInUser().firstOrNull()?.userId
+        return getCurrentLoggedInUser().firstOrNull()?.userPhoneNumber
     }
 
     companion object {

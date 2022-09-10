@@ -5,7 +5,7 @@ import com.example.cashcount.mvi.PartialChange
 
 data class CreateAccountState(
     val initialBalance: String = "",
-    val accountName: String,
+    val accountName: String = "",
     val accountType: AccountType? = null,
     val isContinueEnabled: Boolean = false
 )
@@ -22,37 +22,43 @@ sealed class CreateAccountSideEffect {
 }
 
 sealed class CreateAccountPartialChange : PartialChange<CreateAccountState> {
-    sealed class OnBalanceUpdateChange : CreateAccountPartialChange() {
+    sealed class OnBalanceUpdateChange(private val isContinueEnabled: Boolean) : CreateAccountPartialChange() {
         override fun reduce(oldState: CreateAccountState): CreateAccountState {
             return when(this) {
                 is InvalidBalanceAmount -> {
                     oldState.copy(
                         initialBalance = balance,
-                        isContinueEnabled = false
+                        isContinueEnabled = isContinueEnabled
                     )
                 }
                 is ValidBalanceAmount -> {
                     oldState.copy(
                         initialBalance = balance,
-                        isContinueEnabled = true
+                        isContinueEnabled = isContinueEnabled
                     )
                 }
             }
         }
 
-        data class ValidBalanceAmount(val balance: String): OnBalanceUpdateChange()
-        data class InvalidBalanceAmount(val balance: String): OnBalanceUpdateChange()
+        data class ValidBalanceAmount(val balance: String, val isContinueEnabled: Boolean): OnBalanceUpdateChange(isContinueEnabled)
+        data class InvalidBalanceAmount(val balance: String): OnBalanceUpdateChange(false)
     }
 
-    data class OnAccountNameUpdateChange(val newAccountName: String): CreateAccountPartialChange() {
+    data class OnAccountNameUpdateChange(val newAccountName: String, val isContinueEnabled: Boolean): CreateAccountPartialChange() {
         override fun reduce(oldState: CreateAccountState): CreateAccountState {
-            return oldState.copy(accountName = newAccountName)
+            return oldState.copy(
+                accountName = newAccountName,
+                isContinueEnabled = isContinueEnabled
+            )
         }
     }
 
-    data class OnAccountTypeUpdateChange(val accountType: AccountType): CreateAccountPartialChange() {
+    data class OnAccountTypeUpdateChange(val accountType: AccountType, val isContinueEnabled: Boolean): CreateAccountPartialChange() {
         override fun reduce(oldState: CreateAccountState): CreateAccountState {
-            return oldState.copy(accountType = accountType)
+            return oldState.copy(
+                accountType = accountType,
+                isContinueEnabled = isContinueEnabled
+            )
         }
     }
 

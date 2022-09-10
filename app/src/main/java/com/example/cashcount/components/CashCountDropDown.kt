@@ -26,7 +26,8 @@ import com.example.cashcount.features.createaccount.data.model.toAccountTypeStri
 
 @Composable
 fun CashCountDropdown(
-    selectedAccountType: AccountType? = null
+    selectedAccountType: AccountType? = null,
+    onAccountTypeSelected: (AccountType) -> Unit
 ) {
     val mExpanded = remember { mutableStateOf(false) }
 
@@ -46,7 +47,10 @@ fun CashCountDropdown(
 
         CashCountOutlinedTextField(
             value = selectedAccount.value?.toAccountTypeString() ?: "",
-            onValueChange = { selectedAccount.value =  AccountType.stringToAccountType(it)},
+            onValueChange = {
+                selectedAccount.value =  AccountType.stringToAccountType(it)
+                onAccountTypeSelected.invoke(AccountType.stringToAccountType(it))
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable { mExpanded.value = !mExpanded.value }
@@ -71,6 +75,7 @@ fun CashCountDropdown(
                 DropdownMenuItem(onClick = {
                     selectedAccount.value = label
                     mExpanded.value = false
+                    onAccountTypeSelected.invoke(label)
                 }) {
                     Text(text = label.toAccountTypeString())
                 }

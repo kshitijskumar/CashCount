@@ -23,13 +23,13 @@ import com.example.cashcount.features.auth.data.mappers.toUserDataStoreModels
 import com.example.cashcount.features.auth.handler.PhoneAuthFailureReason
 import com.example.cashcount.features.auth.handler.PhoneAuthStatus
 import com.example.cashcount.ui.theme.Black_100
-import com.google.firebase.auth.FirebaseUser
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 @Composable
 fun VerificationScreen(
     vm: VerificationViewModel = hiltViewModel(),
-    phoneAuthStatus: PhoneAuthStatus?,
+    phoneAuthStatus: Flow<PhoneAuthStatus?>,
     verifyCodeEntered: (String) -> Unit,
     onBackPressed: () -> Unit,
     navigateToMainScreen: () -> Unit
@@ -42,24 +42,24 @@ fun VerificationScreen(
     val state = vm.state.collectAsState()
 
     LaunchedEffect(key1 = phoneAuthStatus) {
-        if (phoneAuthStatus == null) return@LaunchedEffect
-
-        vm.processIntent(VerificationIntent.StopLoading)
-        when(phoneAuthStatus) {
-            PhoneAuthStatus.CodeSent -> {
-                // not to handle here
-            }
-            is PhoneAuthStatus.VerificationCompleted -> {
-                vm.processIntent(VerificationIntent.CreateUserIntent(phoneAuthStatus.user.toUserDataStoreModels()))
-            }
-            is PhoneAuthStatus.VerificationFailed -> {
-                val toastMsg = when(phoneAuthStatus.reason) {
-                    PhoneAuthFailureReason.INVALID_REQUEST -> "Invalid phone number"
-                    PhoneAuthFailureReason.QUOTA_EXCEEDED -> "Something went wrong"
-                    PhoneAuthFailureReason.UNKNOWN_ERROR -> "Something went wrong"
-                    PhoneAuthFailureReason.INVALID_OTP -> "Invalid code entered"
+        phoneAuthStatus.collect {
+            vm.processIntent(VerificationIntent.StopLoading)
+            when(it) {
+                PhoneAuthStatus.CodeSent -> {
+                    // not to handle here
                 }
-                Toast.makeText(context, toastMsg, Toast.LENGTH_LONG).show()
+                is PhoneAuthStatus.VerificationCompleted -> {
+                    vm.processIntent(VerificationIntent.CreateUserIntent(it.user.toUserDataStoreModels()))
+                }
+                is PhoneAuthStatus.VerificationFailed -> {
+                    val toastMsg = when(it.reason) {
+                        PhoneAuthFailureReason.INVALID_REQUEST -> "Invalid phone number"
+                        PhoneAuthFailureReason.QUOTA_EXCEEDED -> "Something went wrong"
+                        PhoneAuthFailureReason.UNKNOWN_ERROR -> "Something went wrong"
+                        PhoneAuthFailureReason.INVALID_OTP -> "Invalid code entered"
+                    }
+                    Toast.makeText(context, toastMsg, Toast.LENGTH_LONG).show()
+                }
             }
         }
     }

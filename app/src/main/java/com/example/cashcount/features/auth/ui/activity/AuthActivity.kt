@@ -11,7 +11,6 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
@@ -36,7 +35,6 @@ import com.example.cashcount.features.main.MainActivity
 import com.example.cashcount.ui.theme.CashCountTheme
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 import javax.inject.Inject
@@ -69,7 +67,6 @@ class AuthActivity : ComponentActivity() {
                     val state = viewModel.state.collectAsState()
                     val phoneAuthStatus = phoneAuthHandler
                         .getPhoneAuthStatusAsFlow()
-                        .collectAsState(initial = null)
 
                     LaunchedEffect(key1 = navController) {
                         Log.d("AuthActStuff", "launch")
@@ -94,7 +91,7 @@ class AuthActivity : ComponentActivity() {
 
                             composable(route = AuthNavigationScreens.LoginScreen.routeName) {
                                 LoginScreen(
-                                    phoneAuthStatus = phoneAuthStatus.value,
+                                    phoneAuthStatus = phoneAuthStatus,
                                     onBackPressed = {
                                         navController.navigateUp()
                                     },
@@ -111,7 +108,7 @@ class AuthActivity : ComponentActivity() {
 
                             composable(route = AuthNavigationScreens.VerificationScreen.routeName) {
                                 VerificationScreen(
-                                    phoneAuthStatus = phoneAuthStatus.value,
+                                    phoneAuthStatus = phoneAuthStatus,
                                     verifyCodeEntered = { code ->
                                         phoneAuthHandler.verifyCodeEntered(code)
                                         Toast.makeText(this@AuthActivity, code, Toast.LENGTH_LONG).show()

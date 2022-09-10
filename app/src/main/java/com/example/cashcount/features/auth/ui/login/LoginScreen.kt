@@ -17,12 +17,13 @@ import com.example.cashcount.R
 import com.example.cashcount.components.*
 import com.example.cashcount.features.auth.handler.PhoneAuthFailureReason
 import com.example.cashcount.features.auth.handler.PhoneAuthStatus
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(
     vm: LoginViewModel = hiltViewModel(),
-    phoneAuthStatus: PhoneAuthStatus?,
+    phoneAuthStatus: Flow<PhoneAuthStatus?>,
     onBackPressed: () -> Unit,
     startPhoneLogin: (String) -> Unit,
     navigateToVerificationScreen: () -> Unit,
@@ -33,30 +34,31 @@ fun LoginScreen(
     val lifecycleOwner = LocalLifecycleOwner.current
 
     LaunchedEffect(key1 = phoneAuthStatus) {
-        if (phoneAuthStatus == null) return@LaunchedEffect
+        phoneAuthStatus.collect {
+            scope.launch {
+                vm.processIntent(LoginIntent.StopLoading)
+            }
+            when(it) {
+                is PhoneAuthStatus.CodeSent -> {
+                    scope.launch {
+                        vm.processIntent(LoginIntent.NavigateToVerificationScreen)
+                    }
+                }
+                is PhoneAuthStatus.VerificationCompleted -> {
+                    // not to handle here
+                }
+                is PhoneAuthStatus.VerificationFailed -> {
+                    val toastMsg = when(it.reason) {
+                        PhoneAuthFailureReason.INVALID_REQUEST -> "Invalid phone number"
+                        PhoneAuthFailureReason.QUOTA_EXCEEDED -> "Something went wrong"
+                        PhoneAuthFailureReason.UNKNOWN_ERROR -> "Something went wrong"
+                        PhoneAuthFailureReason.INVALID_OTP -> "Invalid code entered"
+                    }
+                    Toast.makeText(context, toastMsg, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
 
-        scope.launch {
-            vm.processIntent(LoginIntent.StopLoading)
-        }
-        when(phoneAuthStatus) {
-            is PhoneAuthStatus.CodeSent -> {
-                scope.launch {
-                    vm.processIntent(LoginIntent.NavigateToVerificationScreen)
-                }
-            }
-            is PhoneAuthStatus.VerificationCompleted -> {
-                // not to handle here
-            }
-            is PhoneAuthStatus.VerificationFailed -> {
-                val toastMsg = when(phoneAuthStatus.reason) {
-                    PhoneAuthFailureReason.INVALID_REQUEST -> "Invalid phone number"
-                    PhoneAuthFailureReason.QUOTA_EXCEEDED -> "Something went wrong"
-                    PhoneAuthFailureReason.UNKNOWN_ERROR -> "Something went wrong"
-                    PhoneAuthFailureReason.INVALID_OTP -> "Invalid code entered"
-                }
-                Toast.makeText(context, toastMsg, Toast.LENGTH_LONG).show()
-            }
-        }
     }
 
     LaunchedEffect(key1 = vm) {
