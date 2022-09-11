@@ -25,6 +25,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.cashcount.R
 import com.example.cashcount.components.SuccessScreen
 import com.example.cashcount.datastore.user.UserDataStore
+import com.example.cashcount.features.addtransaction.ui.AddTransactionScreen
 import com.example.cashcount.features.createaccount.ui.CreateAccountOnboardingScreen
 import com.example.cashcount.features.createaccount.ui.CreateAccountScreen
 import com.example.cashcount.ui.theme.CashCountTheme
@@ -103,7 +104,15 @@ class MainActivity : ComponentActivity() {
                             }
 
                             composable(route = MainNavigationScreens.MainDashboardScreen.routeName) {
-                                Text(text = "dash")
+//                                Text(text = "dash")
+                                AddTransactionScreen(
+                                    onBackPressed = {
+                                        navController.navigateUp()
+                                    },
+                                    onNavigateBack = {
+                                        navController.navigateUp()
+                                    }
+                                )
                             }
 
                         }

@@ -17,4 +17,12 @@
     <string name="account_name">Account name</string>
     <string name="account_type">Account type</string>
     <string name="you_are_set">You are set!</string>
+    <string name="expense">Expense</string>
+    <string name="income">Income</string>
+    <string name="how_much">How much?</string>
+    <string name="category">Category</string>
+    <string name="description">Description</string>
+    <string name="add">Add</string>
+    <string name="spent_on">Spent on</string>
+    <string name="account_used">Account used</string>
 </resources>

@@ -18,3 +18,6 @@ val Black_100 = Color(0xFF0D0E0F)
 
 val Black_25 = Color(0xFF292B2D)
 val White_80_64 = Color(0xA3FCFCFC)
+
+val Red = Color(0xFFFD3C4A)
+val Green = Color(0xFF00A86B)
